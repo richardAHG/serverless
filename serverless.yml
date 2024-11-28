@@ -12,9 +12,9 @@ plugins:
   - serverless-offline
 
 functions:
-  hello:
-    handler: handler.listar
+  fusionados:
+    handler: fusionados.listar
     events:
       - httpApi:
-          path: /
+          path: /fusionados/{people_id}
           method: get
