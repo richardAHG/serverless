@@ -17,6 +17,7 @@ provider:
           Resource:
             - arn:aws:dynamodb:us-east-1:537124953041:table/Users
             - arn:aws:dynamodb:us-east-1:537124953041:table/fusionadosTable
+            - arn:aws:dynamodb:us-east-1:537124953041:table/cacheTable
 
 plugins:
   - serverless-offline
@@ -59,6 +60,17 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: fusionadosTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+    cacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: cacheTable
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: id
