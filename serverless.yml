@@ -7,6 +7,15 @@ frameworkVersion: "4"
 provider:
   name: aws
   runtime: nodejs20.x
+  region: "us-east-1"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 
+            - dynamodb:*
+          Resource: 
+          - arn:aws:dynamodb:us-east-1:537124953041:table/Users
 
 plugins:
   - serverless-offline
@@ -18,3 +27,24 @@ functions:
       - httpApi:
           path: /fusionados/{people_id}
           method: get
+  almacenar:
+    handler: almacenar.registrar
+    events:
+      - httpApi:
+          path: /almacenar
+          method: post
+
+resources: # CloudFormation template syntax
+  Resources:
+    Users:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Users
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+       
