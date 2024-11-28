@@ -19,21 +19,35 @@ provider:
             - arn:aws:dynamodb:us-east-1:537124953041:table/fusionadosTable
             - arn:aws:dynamodb:us-east-1:537124953041:table/cacheTable
 
+package:
+  exclude:
+    - "**/*.map"
+    - "**/*.test.js"
+    - "**/*.test.ts"
+    - "**/*.md"
+    - "node_modules/aws-sdk/**"
+    - "coverage/**"
+
 plugins:
   - serverless-offline
   - serverless-api-gateway-throttling
 
 custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: false
+    target: "node20"
   # Configuración global de throttling para la API Gateway
   apiGatewayThrottling:
-    maxRequestsPerSecond: 100   # Máximo de solicitudes por segundo
-    maxConcurrentRequests: 50   # Máximo de solicitudes simultáneas
+    maxRequestsPerSecond: 100 # Máximo de solicitudes por segundo
+    maxConcurrentRequests: 50 # Máximo de solicitudes simultáneas
 
 functions:
   fusionados:
     handler: fusionados.listar
-    memorySize: 128  # 128MB
-    timeout: 10      
+    memorySize: 256 # 256MB
+    timeout: 10
     # reservedConcurrency: 2  # Limita la concurrencia
     events:
       - http:
@@ -41,8 +55,8 @@ functions:
           method: get
   almacenar:
     handler: almacenar.registrar
-    memorySize: 128  # 128MB
-    timeout: 10      
+    memorySize: 256 # 256MB
+    timeout: 10
     # reservedConcurrency: 2  # Limita la concurrencia
     events:
       - http:
@@ -50,8 +64,8 @@ functions:
           method: post
   historial:
     handler: historial.listar
-    memorySize: 128  # 128MB
-    timeout: 10     
+    memorySize: 256 # 256MB
+    timeout: 10
     # reservedConcurrency: 2  # Limita la concurrencia
     events:
       - http:

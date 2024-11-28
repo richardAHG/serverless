@@ -1,7 +1,9 @@
 {
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.146",
     "serverless-api-gateway-throttling": "^2.0.3",
-    "serverless-offline": "^14.3.4"
+    "serverless-offline": "^14.3.4",
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "aws-sdk": "^2.1692.0",
