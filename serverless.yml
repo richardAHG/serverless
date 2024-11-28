@@ -21,26 +21,45 @@ provider:
 
 plugins:
   - serverless-offline
+  - serverless-api-gateway-throttling
+
+custom:
+  # Configuración global de throttling para la API Gateway
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 100   # Máximo de solicitudes por segundo
+    maxConcurrentRequests: 50   # Máximo de solicitudes simultáneas
 
 functions:
   fusionados:
     handler: fusionados.listar
+    memorySize: 128  # 128MB
+    timeout: 10      
+    # reservedConcurrency: 2  # Limita la concurrencia
     events:
-      - httpApi:
+      - http:
           path: /fusionados/{people_id}
           method: get
   almacenar:
     handler: almacenar.registrar
+    memorySize: 128  # 128MB
+    timeout: 10      
+    # reservedConcurrency: 2  # Limita la concurrencia
     events:
-      - httpApi:
+      - http:
           path: /almacenar
           method: post
   historial:
     handler: historial.listar
+    memorySize: 128  # 128MB
+    timeout: 10     
+    # reservedConcurrency: 2  # Limita la concurrencia
     events:
-      - httpApi:
+      - http:
           path: /historial
           method: get
+          throttling:
+            maxRequestsPerSecond: 80
+            maxConcurrentRequests: 40
 
 resources:
   Resources:
@@ -67,6 +86,7 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+
     cacheTable:
       Type: AWS::DynamoDB::Table
       Properties:
