@@ -1,4 +1,6 @@
 const http = require("axios");
+const AWS = require("aws-sdk");
+const { v4 } = require("uuid");
 
 const httpRequest = async (url) => {
   try {
@@ -10,14 +12,24 @@ const httpRequest = async (url) => {
 };
 
 listar = async (event) => {
+  const dynamoDB = new AWS.DynamoDB.DocumentClient();
+  const table = "fusionadosTable";
+
   const { people_id } = event.pathParameters;
 
   try {
-    const people = await httpRequest(`https://swapi.py4e.com/api/people/${people_id}`);
+    const people = await httpRequest(
+      `https://swapi.py4e.com/api/people/${people_id}`
+    );
 
     if (people?.homeworld) {
       people.planet = await httpRequest(people.homeworld);
     }
+
+    await dynamoDB
+      .put({ TableName: table, Item: { id: people_id, ...people } })
+      .promise();
+
     return {
       statusCode: 200,
       body: JSON.stringify({
